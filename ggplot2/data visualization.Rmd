@@ -1,0 +1,132 @@
+---
+title: "data visualization"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r}
+knitr::opts_chunk$set(message = FALSE)
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+```{r results='hide', message=FALSE, warning=FALSE}
+library('ggplot2')
+library('tidyverse')
+library('palmerpenguins')
+
+png(file = "/Users/Lenovo/Desktop/R/google/bill_depth_mm.png")
+```
+
+```{r results='hide', message=FALSE, warning=FALSE}
+ggplot(penguins) + 
+  geom_smooth(mapping = aes(x=body_mass_g, y=bill_length_mm, method='loess', color = species)) +
+  geom_jitter(mapping = aes(x=body_mass_g, y=bill_length_mm, color = species)) +
+  facet_wrap(~sex)
+```
+
+
+```{r results='hide', message=FALSE, warning=FALSE}
+# smooth plot
+ggplot(penguins) + geom_smooth(mapping = aes(x=bill_length_mm, y=body_mass_g, fill=island)) +
+  facet_wrap(~sex)
+```
+
+```{r results='hide', message=FALSE, warning=FALSE}
+# diamonds dataset
+View(diamonds)
+```
+
+```{r results='hide', message=FALSE, warning=FALSE}
+# plot how many diamonds there are in each depth value per cut
+ggplot(diamonds) + geom_bar(aes(depth, fill=cut))
+```
+
+```{r results='hide', message=FALSE, warning=FALSE}
+# show the relation between carat and price per each cut
+ggplot(diamonds) +
+  geom_point(aes(x=carat, price, color=cut)) + 
+  facet_wrap(~cut)
+```
+
+```{r results='hide', message=FALSE, warning=FALSE}
+# 
+ggplot(diamonds) + 
+  geom_point(aes(x=carat, y=price, color=color)) +
+  facet_grid(cut~color)
+
+```
+
+```{r results='hide', message=FALSE, warning=FALSE}
+diamonds %>%
+  group_by(cut) %>%
+  filter(depth == 61 | depth == 62) %>%
+  summarise(n = n())
+```
+
+```{r results='hide', message=FALSE, warning=FALSE}
+
+# import hotel bookings dataset 
+hotel_bookings <- read.csv("C:/Users/Lenovo/Downloads/hotel_bookings.csv")
+```
+
+```{r results='hide', message=FALSE, warning=FALSE}
+
+# test the hypothesis that those who book early have children
+ggplot(hotel_bookings) + geom_point(mapping = aes(x=lead_time, y = children))
+```
+
+
+
+```{r results='hide', message=FALSE, warning=FALSE}
+# test the hypothesis that guests without children book the most weekend nights
+ggplot(hotel_bookings) + 
+  geom_point(mapping = aes(x=stays_in_weekend_nights, y = children)) 
+```
+
+```{r results='hide', message=FALSE, warning=FALSE}
+# display the number of bookings grouped by customer type by each distribution channel 
+ggplot(hotel_bookings) +
+  geom_bar(aes(distribution_channel, fill=customer_type)) +
+  facet_wrap(~deposit_type) +
+  theme(axis.text.x = element_text(angle = 45))
+```
+
+```{r results='hide', message=FALSE, warning=FALSE}
+ggplot(data = hotel_bookings) +
+  geom_bar(aes(market_segment, fill=hotel)) +
+  facet_wrap('market_segment') +
+  theme(axis.text.x = element_text(angle = 45))
+```
+
+```{r results='hide', message=FALSE, warning=FALSE}
+ggplot(data = hotel_bookings) +
+    geom_bar(mapping = aes(x = hotel)) +
+    facet_wrap(~market_segment)
+```
+```{r results='hide', message=FALSE, warning=FALSE}
+onlineta_city_hotels <- hotel_bookings %>%
+                            filter(hotel == 'City Hotel' & market_segment=="Online TA")
+
+
+mindate <- min(hotel_bookings$arrival_date_year)
+
+ggplot(data = onlineta_city_hotels) +
+  geom_point(mapping = aes(x = lead_time, y = children)) +
+  labs(title = 'lead time vs children', subtitle = paste0('City Hotel and Online TA ', mindate),
+       caption='the dataset is from Google Data Analytics Course',
+       x = 'lead time', y = 'the number of children')  +
+ annotate('text', x=200, y=2.5, label='there is no relation between the lead time and children number')
+```
+
+```{r}
+
+```
+
+
